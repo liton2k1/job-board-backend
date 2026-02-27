@@ -5,16 +5,12 @@ import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import { notFound } from "./app/middlewares/notFound";
 const app: Application = express()
 
-
-// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }))
 
-// Routes
 app.use("/api", router)
 
-// Testing Route
 app.get("/", (req: Request, res: Response) => {
     res.send({
         success: true,
@@ -22,10 +18,7 @@ app.get("/", (req: Request, res: Response) => {
     })
 })
 
-// Global Error Handler
 app.use(globalErrorHandler);
-
-// Not Found Rote
 app.use(notFound);
 
 export default app;

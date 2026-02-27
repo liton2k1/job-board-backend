@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ApplicationRoutes = void 0;
+const express_1 = require("express");
+const application_controller_1 = require("./application.controller");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const application_validation_1 = require("./application.validation");
+const router = (0, express_1.Router)();
+router.post("/", (0, validateRequest_1.validateRequest)(application_validation_1.createApplicationZodSchema), application_controller_1.ApplicationControllers.createApplication);
+exports.ApplicationRoutes = router;

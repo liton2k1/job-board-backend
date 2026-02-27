@@ -4,5 +4,5 @@ export interface IJob {
     location: string;
     category: string;
     description: string;
-    createdAt?: Date;
+    created_at?: Date;
 }
