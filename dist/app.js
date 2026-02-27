@@ -47,7 +47,7 @@ app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
 // Routes
-app.use("/api/v1", routes_1.default);
+app.use("/api", routes_1.default);
 // Testing Route
 app.get("/", (req, res) => {
     res.send({

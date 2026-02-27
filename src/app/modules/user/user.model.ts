@@ -1,13 +1,5 @@
 import { model, Schema } from "mongoose";
-import { ActiveStatus, Gender, IAuthProviders, IUser, Role } from "./user.interface";
-
-const AuthProviderSchema = new Schema<IAuthProviders>({
-    provider: { type: String },
-    providerId: { type: String }
-}, {
-    versionKey: false,
-    _id: false
-})
+import { ActiveStatus, Gender, IUser, Role } from "./user.interface";
 
 const UserSchema = new Schema<IUser>({
     name: { type: String, required: true, trim: true },
@@ -33,7 +25,6 @@ const UserSchema = new Schema<IUser>({
     },
     isVerified: { type: Boolean },
     isDeleted: { type: Boolean },
-    auth: [AuthProviderSchema],
 }, {
     timestamps: true,
     versionKey: false

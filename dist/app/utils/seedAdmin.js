@@ -26,14 +26,12 @@ const adminSeed = () => __awaiter(void 0, void 0, void 0, function* () {
         }
         console.log("Trying to create Admin...");
         const hashedPassword = yield bcryptjs_1.default.hash(config_1.envVars.ADMIN_PASSWORD, Number(config_1.envVars.BCRYPT_SALT_ROUND));
-        const authProviders = { provider: "credentials", providerId: config_1.envVars.ADMIN_EMAIL };
         const payload = {
             name: "Admin",
             email: config_1.envVars.ADMIN_EMAIL,
             password: hashedPassword,
             role: user_interface_1.Role.ADMIN,
             isVerified: true,
-            auth: [authProviders]
         };
         const admin = yield user_model_1.UserModel.create(payload);
         console.log("Admin created successfully !\n");

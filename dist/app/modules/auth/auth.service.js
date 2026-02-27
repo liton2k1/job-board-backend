@@ -30,8 +30,7 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const user_model_1 = require("../user/user.model");
 const AppError_1 = __importDefault(require("../../helpers/AppError"));
 const userToken_1 = require("../../utils/userToken");
-const config_1 = require("../../config");
-const credentialsLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+const userLogin = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = payload;
     const isUserExist = yield user_model_1.UserModel.findOne({ email });
     if (!isUserExist) {
@@ -49,23 +48,6 @@ const credentialsLogin = (payload) => __awaiter(void 0, void 0, void 0, function
         user: rest
     };
 });
-const getNewAccessToken = (refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
-    const newAccessToken = yield (0, userToken_1.createNewAccessTokenWithRefreshToken)(refreshToken);
-    return {
-        accessToken: newAccessToken
-    };
-});
-const resetPassword = (oldPassword, newPassword, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.UserModel.findById(decodedToken.userId);
-    const isOldPasswordMatch = yield bcryptjs_1.default.compare(oldPassword, user.password);
-    if (!isOldPasswordMatch) {
-        throw new AppError_1.default(http_status_codes_1.default.UNAUTHORIZED, "Old Password does not match");
-    }
-    user.password = yield bcryptjs_1.default.hash(newPassword, Number(config_1.envVars.BCRYPT_SALT_ROUND));
-    user.save();
-});
 exports.AuthServices = {
-    credentialsLogin,
-    getNewAccessToken,
-    resetPassword
+    userLogin
 };

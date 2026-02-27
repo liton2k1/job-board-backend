@@ -12,7 +12,7 @@ app.use(cookieParser());
 app.use(urlencoded({ extended: true }))
 
 // Routes
-app.use("/api/v1", router)
+app.use("/api", router)
 
 // Testing Route
 app.get("/", (req: Request, res: Response) => {

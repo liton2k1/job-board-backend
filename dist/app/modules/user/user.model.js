@@ -3,13 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModel = void 0;
 const mongoose_1 = require("mongoose");
 const user_interface_1 = require("./user.interface");
-const AuthProviderSchema = new mongoose_1.Schema({
-    provider: { type: String },
-    providerId: { type: String }
-}, {
-    versionKey: false,
-    _id: false
-});
 const UserSchema = new mongoose_1.Schema({
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true },
@@ -33,7 +26,6 @@ const UserSchema = new mongoose_1.Schema({
     },
     isVerified: { type: Boolean },
     isDeleted: { type: Boolean },
-    auth: [AuthProviderSchema],
 }, {
     timestamps: true,
     versionKey: false

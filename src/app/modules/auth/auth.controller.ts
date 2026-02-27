@@ -3,13 +3,11 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { AuthServices } from "./auth.service";
 import httpStatus from "http-status-codes";
-import AppError from "../../helpers/AppError";
 import { setAuthCookie } from "../../utils/setCookie";
-import { JwtPayload } from "jsonwebtoken";
 
 const credentialsLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const loginInfo = await AuthServices.credentialsLogin(req.body);
+    const loginInfo = await AuthServices.userLogin(req.body);
 
     setAuthCookie(res, loginInfo);
 
@@ -18,22 +16,6 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
         statusCode: httpStatus.OK,
         message: "User logged in successfully !",
         data: loginInfo,
-    })
-})
-const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-        throw new AppError(httpStatus.BAD_REQUEST, "No refresh token received !")
-    }
-    const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string);
-
-    setAuthCookie(res, tokenInfo);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: httpStatus.OK,
-        message: "User logged in successfully !",
-        data: tokenInfo,
     })
 })
 
@@ -58,25 +40,7 @@ const logout = catchAsync(async (req: Request, res: Response, next: NextFunction
     })
 })
 
-const resetPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
-    const newPassword = req.body.newPassword;
-    const oldPassword = req.body.oldPassword;
-    const decodedToken = req.user
-
-    await AuthServices.resetPassword(oldPassword, newPassword, decodedToken as JwtPayload);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: httpStatus.OK,
-        message: "Password Changed Successfully",
-        data: null,
-    })
-})
-
 export const AuthControllers = {
     credentialsLogin,
-    getNewAccessToken,
     logout,
-    resetPassword
 }

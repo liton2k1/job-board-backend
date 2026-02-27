@@ -25,12 +25,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
 const AppError_1 = __importDefault(require("../../helpers/AppError"));
-const user_interface_1 = require("./user.interface");
 const user_model_1 = require("./user.model");
 const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = require("../../config");
-// Create User
 const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = payload, rest = __rest(payload, ["email", "password"]);
     const isUserExist = yield user_model_1.UserModel.findOne({ email });
@@ -38,48 +36,9 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User already exist !");
     }
     const hashPassword = yield bcryptjs_1.default.hash(password, Number(config_1.envVars.BCRYPT_SALT_ROUND));
-    const authProviders = { provider: "credentials", providerId: email };
-    const user = yield user_model_1.UserModel.create(Object.assign({ email, password: hashPassword, auth: [authProviders] }, rest));
+    const user = yield user_model_1.UserModel.create(Object.assign({ email, password: hashPassword }, rest));
     return user;
 });
-// Get All Users
-const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield user_model_1.UserModel.find({});
-    const totalUsers = yield user_model_1.UserModel.countDocuments({});
-    return {
-        data: users,
-        meta: {
-            total: totalUsers,
-        }
-    };
-});
-// Update User
-const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
-    const isUserExist = yield user_model_1.UserModel.findById(userId);
-    if (!isUserExist) {
-        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User not found !");
-    }
-    if (payload.role) {
-        if (decodedToken.role === user_interface_1.Role.USER) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You are not authorized !");
-        }
-        if (payload.role) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You are not authorized !");
-        }
-    }
-    if (payload.isActive || payload.isDeleted || payload.isVerified) {
-        if (decodedToken.role === user_interface_1.Role.USER) {
-            throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You are not authorized !");
-        }
-    }
-    if (payload.password) {
-        payload.password = yield bcryptjs_1.default.hash(payload.password, Number(config_1.envVars.BCRYPT_SALT_ROUND));
-    }
-    const newUpdateUser = yield user_model_1.UserModel.findByIdAndUpdate(userId, payload, { new: true, runValidators: true });
-    return newUpdateUser;
-});
 exports.UserServices = {
-    createUser,
-    getAllUsers,
-    updateUser
+    createUser
 };
